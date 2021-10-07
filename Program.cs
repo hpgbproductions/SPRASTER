@@ -81,7 +81,7 @@ namespace Rastermatic
                     }
                 }
 
-                OutputContent += @"&lt;/mspace&gt;"" fontName=""Default"" fontSize=""1"" horizontalAlignment=""Center"" verticalAlignment=""Middle"" width=""1"" height=""1"" outlineWidth=""0"" emission=""0"" offset=""0,0.006,0"" rotation=""90,0,0"" gradient=""None"" curvature=""0"" />
+                OutputContent += @$"&lt;/mspace&gt;"" fontName=""Default"" fontSize=""1"" horizontalAlignment=""Center"" verticalAlignment=""Middle"" width=""{BitmapSize.Width / 20f}"" height=""{BitmapSize.Height / 20f}"" outlineWidth=""0"" emission=""0"" offset=""0,0.006,0"" rotation=""90,0,0"" gradient=""None"" curvature=""0"" />
         </Part>
       </Parts>
       <Connections/>
@@ -111,7 +111,7 @@ namespace Rastermatic
                 return;
             }
 
-            Console.WriteLine("\nSuccessfully exported data to " + OutputFilepath);
+            Console.WriteLine("\nSuccessfully exported data onto desktop: " + OutputFilepath);
             Console.WriteLine("Press ENTER to quit.");
             Console.ReadLine();
         }
