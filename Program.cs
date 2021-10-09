@@ -8,6 +8,8 @@ namespace Rastermatic
     {
         static void Main(string[] args)
         {
+            const float PixelSize = 0.47f;
+
             string InputFilepath;
             Bitmap InputBitmap;
 
@@ -19,7 +21,12 @@ namespace Rastermatic
             Color ColorPrevious = Color.Empty;
             Color ColorCurrent = Color.Empty;
 
-            Console.WriteLine("SP Rastermatic");
+            // Transparent pixels (alpha = 0) are rendered as space
+            bool IsTransparentPrevious = false;
+            bool IsTransparentCurrent = false;
+            int TransparentCount = 0;
+
+            Console.WriteLine("SP Rastermatic 1.1");
             Console.WriteLine("Copyright (C) 2021 hpgbproductions");
             Console.WriteLine("Released under GNU General Public License V3.0");
             Console.WriteLine();
@@ -48,11 +55,11 @@ namespace Rastermatic
 <DesignerParts>
   <DesignerPart name = """;
                 OutputContent += Path.GetFileName(InputFilepath);
-                OutputContent += @""" category=""Sub Assemblies"" icon=""GroupIconSubAssembly"" description = """">
+                OutputContent += @$""" category=""Sub Assemblies"" icon=""GroupIconSubAssembly"" description = """">
     <Assembly>
       <Parts>
         <Part id=""2"" partType=""Label-1"" position=""0,0,0"" rotation=""270,0,0"" drag=""0,0,0,0,0,0"" materials=""0,1,2"" scale=""1,1,1"" partCollisionResponse=""Default"" calculateDrag=""false"">
-           <Label.State designText = ""&lt;mspace=0.47em&gt;&lt;line-height=0.47em&gt;";
+           <Label.State designText = ""&lt;mspace={PixelSize}em&gt;&lt;line-height={PixelSize}em&gt;";
 
                 BitmapSize = InputBitmap.Size;
                 Console.WriteLine($"Image resolution: {BitmapSize.Width}x{BitmapSize.Height}");
@@ -65,14 +72,32 @@ namespace Rastermatic
                     {
                         // Write data for a pixel
                         ColorCurrent = InputBitmap.GetPixel(x, y);
-                        if (ColorCurrent != ColorPrevious)
+                        // Get transparency
+                        // To prevent label rendering issues, the last character in a row is treated as non-transparent
+                        IsTransparentCurrent = ColorCurrent.A == 0 && x < BitmapSize.Width - 1;
+
+                        if (IsTransparentCurrent)
                         {
-                            OutputContent += string.Format("&lt;color=#{0:X2}{1:X2}{2:X2}{3:X2}&gt;",
-                                ColorCurrent.R, ColorCurrent.G, ColorCurrent.B, ColorCurrent.A);
+                            TransparentCount++;
                         }
-                        OutputContent += "■";
+                        else    // Current pixel is not transparent, or is the last in its row
+                        {
+                            if (IsTransparentPrevious)
+                            {
+                                OutputContent += $"&lt;space={PixelSize * TransparentCount:F3}em&gt;";
+                                TransparentCount = 0;
+                            }
+
+                            if (ColorCurrent != ColorPrevious || IsTransparentPrevious)
+                            {
+                                OutputContent += string.Format("&lt;color=#{0:X2}{1:X2}{2:X2}{3:X2}&gt;",
+                                    ColorCurrent.R, ColorCurrent.G, ColorCurrent.B, ColorCurrent.A);
+                            }
+                            OutputContent += "■";
+                        }
 
                         ColorPrevious = ColorCurrent;
+                        IsTransparentPrevious = IsTransparentCurrent;
                     }
 
                     if (y < BitmapSize.Height - 1)
@@ -111,7 +136,7 @@ namespace Rastermatic
                 return;
             }
 
-            Console.WriteLine("\nSuccessfully exported data onto desktop: " + OutputFilepath);
+            Console.WriteLine("\nSuccessfully exported data onto desktop: " + OutputFilename);
             Console.WriteLine("Press ENTER to quit.");
             Console.ReadLine();
         }
