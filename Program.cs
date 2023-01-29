@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Drawing;
+using System.Globalization;
 
 namespace Rastermatic
 {
@@ -62,7 +63,7 @@ namespace Rastermatic
         <Part id=""2"" partType=""Label-1"" position=""0,0,0"" rotation=""270,0,0"" drag=""0,0,0,0,0,0"" materials=""0,1,2"" scale=""1,1,1"" partCollisionResponse=""Default"" calculateDrag=""false"">
            <Label.State designText = ""&lt";
            
-           OutputContent += string.Format(CultureInfo.CreateSpecificCulture("en-US"), ";mspace={0:F2}em&gt;&lt;line-height={1:F2}em&gt;", PixelSize, PixelSize);
+           OutputContent += string.Format(CultureInfo.InvariantCulture, ";mspace={0:F2}em&gt;&lt;line-height={1:F2}em&gt;", PixelSize, PixelSize);
 
                 BitmapSize = InputBitmap.Size;
                 Console.WriteLine($"Image resolution: {BitmapSize.Width}x{BitmapSize.Height}");
@@ -87,7 +88,7 @@ namespace Rastermatic
                         {
                             if (IsTransparentPrevious)
                             {
-                                OutputContent += string.Format(CultureInfo.CreateSpecificCulture("en-US"), "&lt;space={0:F3}em&gt;", PixelSize * TransparentCount);
+                                OutputContent += string.Format(CultureInfo.InvariantCulture, "&lt;space={0:F3}em&gt;", PixelSize * TransparentCount);
                                 TransparentCount = 0;
                             }
 
