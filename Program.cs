@@ -27,7 +27,7 @@ namespace Rastermatic
             bool IsTransparentCurrent = false;
             int TransparentCount = 0;
 
-            Console.WriteLine("SP Rastermatic 1.1.1");
+            Console.WriteLine("SP Rastermatic 1.1.2");
             Console.WriteLine("Copyright (C) 2021 hpgbproductions");
             Console.WriteLine("Released under GNU General Public License V3.0");
             Console.WriteLine();
